@@ -43,36 +43,11 @@
         .menu a:hover {
             color: #00b963;
         }
-        .logout-button {
-            background-color: #d9534f;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            font-size: 1rem;
-            cursor: pointer;
-            margin-top: 10px;
-            width: 100%;
-        }
-        .logout-button:hover {
-            background-color: #c9302c;
-        }
     </style>
     <script>
         function toggleMenu() {
             var menu = document.getElementById('menu');
             menu.style.display = menu.style.display === 'none' ? 'flex' : 'none';
-        }
-
-        // Função de logout
-        function logout() {
-            const auth = getAuth();
-            auth.signOut().then(() => {
-                localStorage.removeItem('isAuthenticated');
-                window.location.href = 'login.html';
-            }).catch((error) => {
-                console.error('Erro ao deslogar:', error);
-            });
         }
     </script>
     <script type="module">
@@ -114,7 +89,6 @@
         <a href="#">Contato</a>
         <a href="#">Serviços</a>
         <a href="#">Produtos</a>
-        <button class="logout-button" onclick="logout()">Sair</button>
     </div>
 </body>
 </html>
