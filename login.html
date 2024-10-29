@@ -107,7 +107,9 @@
                 .then((result) => {
                     // O usuário está autenticado
                     const user = result.user;
-                    console.log('Usuário autenticado:', user);
+                console.log('Usuário autenticado:', user);
+                    // Redirecionar para a página de sucesso
+                window.location.href = 'sucesso.html'
                 })
                 .catch((error) => {
                     // Ocorreu um erro na autenticação
