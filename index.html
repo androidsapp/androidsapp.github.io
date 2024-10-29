@@ -58,27 +58,10 @@
             background-color: #c9302c;
         }
     </style>
-    <script>
-        function toggleMenu() {
-            var menu = document.getElementById('menu');
-            menu.style.display = menu.style.display === 'none' ? 'flex' : 'none';
-        }
-
-        // Função de logout
-        function logout() {
-            const auth = getAuth();
-            auth.signOut().then(() => {
-                localStorage.removeItem('isAuthenticated');
-                window.location.href = 'login.html';
-            }).catch((error) => {
-                console.error('Erro ao deslogar:', error);
-            });
-        }
-    </script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyARUM95gOyKznC4LEACCoHxfSIQ8AjXwtU",
@@ -103,6 +86,22 @@
                 window.location.href = 'login.html';
             }
         });
+
+        // Função de logout
+        function logout() {
+            signOut(auth).then(() => {
+                console.log('Usuário deslogado com sucesso');
+                window.location.href = 'login.html';
+            }).catch((error) => {
+                console.error('Erro ao deslogar:', error);
+            });
+        }
+
+        // Adiciona o evento de clique ao botão de logout
+        document.addEventListener('DOMContentLoaded', () => {
+            const logoutButton = document.querySelector('.logout-button');
+            logoutButton.addEventListener('click', logout);
+        });
     </script>
 </head>
 <body>
@@ -114,7 +113,7 @@
         <a href="#">Contato</a>
         <a href="#">Serviços</a>
         <a href="#">Produtos</a>
-        <button class="logout-button" onclick="logout()">Sair</button>
+        <button class="logout-button">Sair</button>
     </div>
 </body>
 </html>
