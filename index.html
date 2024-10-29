@@ -91,6 +91,7 @@
         function logout() {
             signOut(auth).then(() => {
                 console.log('Usuário deslogado com sucesso');
+                localStorage.removeItem('isAuthenticated');
                 window.location.href = 'login.html';
             }).catch((error) => {
                 console.error('Erro ao deslogar:', error);
@@ -101,12 +102,19 @@
         document.addEventListener('DOMContentLoaded', () => {
             const logoutButton = document.querySelector('.logout-button');
             logoutButton.addEventListener('click', logout);
+
+            // Função para alternar o menu
+            const menuIcon = document.querySelector('.menu-icon');
+            const menu = document.querySelector('.menu');
+            menuIcon.addEventListener('click', () => {
+                menu.style.display = menu.style.display === 'none' ? 'flex' : 'none';
+            });
         });
     </script>
 </head>
 <body>
     <nav class="navbar">
-        <div class="menu-icon" onclick="toggleMenu()">☰</div>
+        <div class="menu-icon">☰</div>
         <div class="logo">AndroidsApp</div>
     </nav>
     <div id="menu" class="menu">
