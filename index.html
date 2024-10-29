@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AndroidsApp</title>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/5.5.2/collection/components/icon/icon.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         body {
             font-family: 'Lato', sans-serif;
@@ -24,53 +23,37 @@
             font-size: 1.5rem;
             cursor: pointer;
         }
-        .profile-icon {
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
         .menu {
             display: none;
             flex-direction: column;
             align-items: flex-start;
             position: absolute;
             top: 50px;
-            width: 70%;
+            left: 10px;
             background-color: #fff;
             border: 1px solid #dbdbdb;
             padding: 10px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
-        .menu a, .menu button {
-            display: flex;
-            align-items: center;
+        .menu a {
             text-decoration: none;
             color: #00d473;
             padding: 10px 0;
-            width: 100%;
-            border: none;
-            background: none;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
         }
-        .menu a:hover, .menu button:hover {
+        .menu a:hover {
             color: #00b963;
         }
-        .menu ion-icon {
-            margin-right: 10px;
-        }
-        .logout-button {
-            background-color: transparent;
-            color: #d9534f;
-            cursor: pointer;
-        }
-        .logout-button:hover {
-            color: #c9302c;
-        }
     </style>
+    <script>
+        function toggleMenu() {
+            var menu = document.getElementById('menu');
+            menu.style.display = menu.style.display === 'none' ? 'flex' : 'none';
+        }
+    </script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyARUM95gOyKznC4LEACCoHxfSIQ8AjXwtU",
@@ -95,48 +78,17 @@
                 window.location.href = 'login.html';
             }
         });
-
-        // Função de logout
-        function logout() {
-            signOut(auth).then(() => {
-                console.log('Usuário deslogado com sucesso');
-                localStorage.removeItem('isAuthenticated');
-                window.location.href = 'login.html';
-            }).catch((error) => {
-                console.error('Erro ao deslogar:', error);
-            });
-        }
-
-        // Adiciona o evento de clique ao botão de logout e ao ícone do menu
-        document.addEventListener('DOMContentLoaded', () => {
-            const logoutButton = document.querySelector('.logout-button');
-            logoutButton.addEventListener('click', logout);
-
-            const menuIcon = document.querySelector('.menu-icon');
-            const menu = document.querySelector('.menu');
-            menuIcon.addEventListener('click', () => {
-                menu.style.display = menu.style.display === 'none' ? 'flex' : 'none';
-            });
-        });
     </script>
 </head>
 <body>
     <nav class="navbar">
-        <div class="menu-icon">☰</div>
+        <div class="menu-icon" onclick="toggleMenu()">☰</div>
         <div class="logo">AndroidsApp</div>
-        <div class="profile-icon">
-            <a href="perfil.html"><ion-icon name="person-circle-outline"></ion-icon></a>
-        </div>
     </nav>
     <div id="menu" class="menu">
-        <a href="#"><ion-icon name="call-outline"></ion-icon>Contato</a>
-        <a href="#"><ion-icon name="build-outline"></ion-icon>Serviços</a>
-        <a href="#"><ion-icon name="cart-outline"></ion-icon>Produtos</a>
-        <a href="#"><ion-icon name="videocam-outline"></ion-icon>Vídeos</a>
-        <a href="#"><ion-icon name="musical-notes-outline"></ion-icon>Músicas</a>
-        <button class="logout-button"><ion-icon name="log-out-outline"></ion-icon>Sair</button>
+        <a href="#">Contato</a>
+        <a href="#">Serviços</a>
+        <a href="#">Produtos</a>
     </div>
-    <script src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js" type="module"></script>
-    <script src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js" nomodule></script>
 </body>
 </html>

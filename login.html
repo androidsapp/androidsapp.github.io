@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login e Cadastro AndroidsApp</title>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/5.5.2/collection/components/icon/icon.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         body {
             font-family: 'Lato', sans-serif;
@@ -36,17 +35,6 @@
             border: 1px solid #dbdbdb;
             border-radius: 4px;
             font-size: 1rem;
-            position: relative;
-        }
-        .container input:invalid:focus {
-            border-color: red;
-        }
-        .container .show-password {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
         }
         .container button {
             width: 100%;
@@ -62,11 +50,11 @@
         .container button:hover {
             background-color: #00b963;
         }
-        .toggle-link, .forgot-password {
+        .toggle-link {
             margin-top: 20px;
             font-size: 0.9rem;
         }
-        .toggle-link a, .forgot-password a {
+        .toggle-link a {
             color: #00d473;
             text-decoration: none;
             cursor: pointer;
@@ -85,11 +73,6 @@
         .google-button:hover {
             background-color: #357AE8;
         }
-        .error-message {
-            color: red;
-            font-size: 0.9rem;
-            display: none;
-        }
     </style>
     <script>
         function toggleForm() {
@@ -98,290 +81,71 @@
             loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
             signupForm.style.display = signupForm.style.display === 'none' ? 'block' : 'none';
         }
-
-        function togglePasswordVisibility() {
-            var passwordInput = document.querySelectorAll('.password-input');
-            passwordInput.forEach(input => {
-                if (input.type === 'password') {
-                    input.type = 'text';
-                } else {
-                    input.type = 'password';
-                }
-            });
-        }
-
-        function validateEmail(email) {
-            const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-            return re.test(String(email).toLowerCase());
-        }
     </script>
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, sendPasswordResetEmail, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    
+    const firebaseConfig = {
+        apiKey: "AIzaSyARUM95gOyKznC4LEACCoHxfSIQ8AjXwtU",
+        authDomain: "androids-apps.firebaseapp.com",
+        projectId: "androids-apps",
+        storageBucket: "androids-apps.appspot.com",
+        messagingSenderId: "964826260210",
+        appId: "1:964826260210:web:7491c0a921f146df91a66b",
+        measurementId: "G-83FX2K52JX"
+    };
+    
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+    
+    document.getElementById('googleLogin').addEventListener('click', () => {
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                const user = result.user;
+                console.log('Usuário autenticado:', user);
+                window.location.href = 'sucesso.html';
+            })
+            .catch((error) => {
+                console.error('Erro na autenticação:', error);
+            });
+    });
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyARUM95gOyKznC4LEACCoHxfSIQ8AjXwtU",
-            authDomain: "androids-apps.firebaseapp.com",
-            projectId: "androids-apps",
-            storageBucket: "androids-apps.appspot.com",
-            messagingSenderId: "964826260210",
-            appId: "1:964826260210:web:7491c0a921f146df91a66b",
-            measurementId: "G-83FX2K52JX"
-        };
+    document.getElementById('signupButton').addEventListener('click', () => {
+        const email = document.getElementById('signupEmail').value;
+        const password = document.getElementById('signupPassword').value;
 
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        const auth = getAuth();
-        const provider = new GoogleAuthProvider();
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                console.log('Usuário cadastrado:', user);
+                window.location.href = 'sucesso.html';
+            })
+            .catch((error) => {
+                console.error('Erro no cadastro:', error.message);
+            });
+    });
+</script>
 
-        document.getElementById('googleLogin').addEventListener('click', () => {
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    const user = result.user;
-                    console.log('Usuário autenticado:', user);
-                    window.location.href = 'sucesso.html';
-                })
-                .catch((error) => {
-                    console.error('Erro na autenticação:', error);
-                    document.querySelector('.error-message').innerText = error.message;
-                    document.querySelector('.error-message').style.display = 'block';
-                });
-        });
-
-        document.getElementById('signupButton').addEventListener('click', () => {
-            const email = document.getElementById('signupEmail').value;
-            const password = document.getElementById('signupPassword').value;
-
-            if (!validateEmail(email)) {
-                alert('Por favor, insira um email válido.');
-                return;
-            }
-
-            createUserWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    console.log('Usuário cadastrado:', user);
-                    window.location.href = 'sucesso.html';
-                })
-                .catch((error) => {
-                    console.error('Erro no cadastro:', error.message);
-                    document.querySelector('.error-message').innerText = error.message;
-                    document.querySelector('.error-message').style.display = 'block';
-                });
-        });
-
-        document.getElementById('loginButton').addEventListener('click', () => {
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-
-            if (!validateEmail(email)) {
-                alert('Por favor, insira um email válido.');
-                return;
-            }
-
-            signInWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    console.log('Usuário autenticado:', user);
-                    window.location.href = 'sucesso.html';
-                })
-                .catch((error) => {
-                    console.error('Erro no login:', error.message);
-                    document.querySelector('.error-message').innerText = error.message;
-                    document.querySelector('.error-message').style.display = 'block';
-                });
-        });
-
-        document.getElementById('forgotPasswordLink').addEventListener('click', () => {
-            const email = prompt('Por favor, insira seu email:');
-            if (email && validateEmail(email)) {
-                sendPasswordResetEmail(auth, email)
-                    .then(() => {
-                        alert('Email de redefinição de senha enviado.');
-                    })
-                    .catch((error) => {
-                        console.error('Erro ao enviar email de redefinição:', error.message);
-                    });
-            } else {
-                alert('Por favor, insira um email válido.');
-            }
-        });
-    </script>
 </head>
 <body>
     <div class="container" id="loginForm">
         <h1>AndroidsApp</h1>
-        <input type="email" id="loginEmail" placeholder="Email" required>
-        <div class="input-password-wrapper">
-            <input type="password" id="loginPassword" class="password-input" placeholder="Senha" required>
-            <ion-icon name="eye-outline" class="show-password" onclick="togglePasswordVisibility()"></ion-icon>
-        </div>
-        <button onclick="login()">Login</button>
+        <input type="text" placeholder="Usuário">
+        <input type="password" placeholder="Senha">
+        <button>Login</button>
         <button class="google-button" id="googleLogin">Login com Google</button>
-        <p><a href="#" onclick="forgotPassword()">Esqueceu a Senha?</a></p>
         <p class="toggle-link">Não tem uma conta? <a onclick="toggleForm()">Cadastre-se</a></p>
     </div>
-
     <div class="container" id="signupForm" style="display:none;">
-        <h1>Cadastre-se no AndroidsApp</h1>
-        <input type="text" id="signupName" placeholder="Nome" required>
-        <input type="email" id="signupEmail" placeholder="Email" required>
-        <div class="input-password-wrapper">
-            <input type="password" id="signupPassword" class="password-input" placeholder="Senha" required>
-            <ion-icon name="eye-outline" class="show-password" onclick="togglePasswordVisibilitySignup()"></ion-icon>
-        </div>
-        <button id="signupButton">Cadastrar</button>
-        <p class="toggle-link">Já tem uma conta? <a onclick="toggleForm()">Login</a></p>
-    </div>
-
-    <!-- Scripts do Firebase e validação de formulário -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
-        import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendPasswordResetEmail, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyARUM95gOyKznC4LEACCoHxfSIQ8AjXwtU",
-            authDomain: "androids-apps.firebaseapp.com",
-            projectId: "androids-apps",
-            storageBucket: "androids-apps.appspot.com",
-            messagingSenderId: "964826260210",
-            appId: "1:964826260210:web:7491c0a921f146df91a66b",
-            measurementId: "G-83FX2K52JX"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        const auth = getAuth();
-        const provider = new GoogleAuthProvider();
-
-        // Verifica o estado de autenticação
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                console.log('Usuário autenticado:', user);
-            } else {
-                // Redireciona para a página de login se não estiver autenticado
-                window.location.href = 'login.html';
-            }
-        });
-
-        // Função de logout
-        function logout() {
-            signOut(auth).then(() => {
-                console.log('Usuário deslogado com sucesso');
-                localStorage.removeItem('isAuthenticated');
-                window.location.href = 'login.html';
-            }).catch((error) => {
-                console.error('Erro ao deslogar:', error);
-            });
-        }
-
-        // Função de login
-        function login() {
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            if (!email.includes('@')) {
-                alert('Por favor, insira um email válido.');
-                return;
-            }
-            signInWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    console.log('Usuário autenticado:', user);
-                    window.location.href = 'sucesso.html';
-                })
-                .catch((error) => {
-                    alert('Erro no login: ' + error.message);
-                });
-        }
-
-        // Função de cadastro
-        document.getElementById('signupButton').addEventListener('click', () => {
-            const email = document.getElementById('signupEmail').value;
-            const password = document.getElementById('signupPassword').value;
-            if (!email.includes('@')) {
-                alert('Por favor, insira um email válido.');
-                return;
-            }
-
-            createUserWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    console.log('Usuário cadastrado:', user);
-                    window.location.href = 'sucesso.html';
-                })
-                .catch((error) => {
-                    alert('Erro no cadastro: ' + error.message);
-                });
-        });
-
-        // Função de login com Google
-        document.getElementById('googleLogin').addEventListener('click', () => {
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    const user = result.user;
-                    console.log('Usuário autenticado:', user);
-                    window.location.href = 'sucesso.html';
-                })
-                .catch((error) => {
-                    alert('Erro na autenticação: ' + error.message);
-                });
-        });
-
-        // Função de recuperação de senha
-        function forgotPassword() {
-            const email = prompt('Por favor, insira seu email:');
-            if (email) {
-                sendPasswordResetEmail(auth, email)
-                    .then(() => {
-                        alert('Email de redefinição de senha enviado!');
-                    })
-                    .catch((error) => {
-                        alert('Erro ao enviar email de redefinição de senha: ' + error.message);
-                    });
-            }
-        }
-
-        // Função para alternar a visibilidade da senha
-        function togglePasswordVisibility() {
-            const passwordInput = document.getElementById('loginPassword');
-            const passwordIcon = document.querySelector('.show-password');
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                passwordIcon.name = 'eye-off-outline';
-            } else {
-                passwordInput.type = 'password';
-                passwordIcon.name = 'eye-outline';
-            }
-        }
-
-        // Função para alternar a visibilidade da senha no cadastro
-        function togglePasswordVisibilitySignup() {
-            const passwordInput = document.getElementById('signupPassword');
-            const passwordIcon = document.querySelector('.show-password');
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                passwordIcon.name = 'eye-off-outline';
-            } else {
-                passwordInput.type = 'password';
-                passwordIcon.name = 'eye-outline';
-            }
-        }
-
-        // Adiciona o evento de clique ao botão de logout e ao ícone do menu
-        document.addEventListener('DOMContentLoaded', () => {
-            const logoutButton = document.querySelector('.logout-button');
-            logoutButton.addEventListener('click', logout);
-
-            const menuIcon = document.querySelector('.menu-icon');
-            const menu = document.querySelector('.menu');
-            menuIcon.addEventListener('click', () => {
-                menu.style.display = menu.style.display === 'none' ? 'flex' : 'none';
-            });
-        });
-    </script>
-    <script src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js" type="module"></script>
-    <script src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js" nomodule></script>
+    <h1>Cadastre-se no AndroidsApp</h1>
+    <input type="email" id="signupEmail" placeholder="Email">
+    <input type="password" id="signupPassword" placeholder="Senha">
+    <button id="signupButton">Cadastrar</button>
+    <p class="toggle-link">Já tem uma conta? <a onclick="toggleForm()">Login</a></p>
+</div>
 </body>
 </html>
