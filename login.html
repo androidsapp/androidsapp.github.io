@@ -83,40 +83,53 @@
         }
     </script>
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-        
-        const firebaseConfig = {
-            apiKey: "AIzaSyARUM95gOyKznC4LEACCoHxfSIQ8AjXwtU",
-            authDomain: "androids-apps.firebaseapp.com",
-            projectId: "androids-apps",
-            storageBucket: "androids-apps.appspot.com",
-            messagingSenderId: "964826260210",
-            appId: "1:964826260210:web:7491c0a921f146df91a66b",
-            measurementId: "G-83FX2K52JX"
-        };
-        
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        const auth = getAuth();
-        const provider = new GoogleAuthProvider();
-        
-        document.getElementById('googleLogin').addEventListener('click', () => {
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    // O usuário está autenticado
-                    const user = result.user;
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    
+    const firebaseConfig = {
+        apiKey: "AIzaSyARUM95gOyKznC4LEACCoHxfSIQ8AjXwtU",
+        authDomain: "androids-apps.firebaseapp.com",
+        projectId: "androids-apps",
+        storageBucket: "androids-apps.appspot.com",
+        messagingSenderId: "964826260210",
+        appId: "1:964826260210:web:7491c0a921f146df91a66b",
+        measurementId: "G-83FX2K52JX"
+    };
+    
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+    
+    document.getElementById('googleLogin').addEventListener('click', () => {
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                const user = result.user;
                 console.log('Usuário autenticado:', user);
-                    // Redirecionar para a página de sucesso
-                window.location.href = 'sucesso.html'
-                })
-                .catch((error) => {
-                    // Ocorreu um erro na autenticação
-                    console.error('Erro na autenticação:', error);
-                });
-        });
-    </script>
+                window.location.href = 'sucesso.html';
+            })
+            .catch((error) => {
+                console.error('Erro na autenticação:', error);
+            });
+    });
+
+    document.getElementById('signupButton').addEventListener('click', () => {
+        const email = document.getElementById('signupEmail').value;
+        const password = document.getElementById('signupPassword').value;
+
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                console.log('Usuário cadastrado:', user);
+                window.location.href = 'sucesso.html';
+            })
+            .catch((error) => {
+                console.error('Erro no cadastro:', error.message);
+            });
+    });
+</script>
+
 </head>
 <body>
     <div class="container" id="loginForm">
