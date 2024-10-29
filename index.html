@@ -85,6 +85,18 @@
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
+
+  const auth = getAuth();
+  // Verifica o estado de autenticação
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log('Usuário autenticado:', user);
+      } else {
+        // Redireciona para a página de login se não estiver autenticado
+        window.location.href = 'login.html';
+      }
+    });
+
 </script>
 
 </head>
