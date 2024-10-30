@@ -76,6 +76,11 @@
         .google-button:hover {
             background-color: #007bff;
         }
+        .input-mail-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
         .input-password-wrapper {
             position: relative;
             display: flex;
@@ -104,8 +109,10 @@
 
     <div class="container" id="signupForm" style="display:none;">
         <h1>Cadastre-se no AndroidsApp</h1>
+        <div class="input-mail-wrapper">
         <input type="text" id="signupName" placeholder="Nome" required>
         <input type="email" id="signupEmail" placeholder="Email" required>
+        </div>
         <div class="input-password-wrapper">
             <input type="password" id="signupPassword" placeholder="Senha" required>
             <ion-icon name="eye-outline" class="show-password" onclick="togglePasswordVisibility('signupPassword')"></ion-icon>
