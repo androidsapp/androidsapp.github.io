@@ -73,71 +73,25 @@
         .google-button:hover {
             background-color: #357AE8;
         }
-    </style>
-    <script>
-        function toggleForm() {
-            var loginForm = document.getElementById('loginForm');
-            var signupForm = document.getElementById('signupForm');
-            loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
-            signupForm.style.display = signupForm.style.display === 'none' ? 'block' : 'none';
+        .input-password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
         }
-    </script>
-    <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-    
-    const firebaseConfig = {
-        apiKey: "AIzaSyARUM95gOyKznC4LEACCoHxfSIQ8AjXwtU",
-        authDomain: "androids-apps.firebaseapp.com",
-        projectId: "androids-apps",
-        storageBucket: "androids-apps.appspot.com",
-        messagingSenderId: "964826260210",
-        appId: "1:964826260210:web:7491c0a921f146df91a66b",
-        measurementId: "G-83FX2K52JX"
-    };
-    
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const auth = getAuth();
-    const provider = new GoogleAuthProvider();
-    
-    document.getElementById('googleLogin').addEventListener('click', () => {
-        signInWithPopup(auth, provider)
-            .then((result) => {
-                const user = result.user;
-                console.log('Usuário autenticado:', user);
-                window.location.href = 'sucesso.html';
-            })
-            .catch((error) => {
-                console.error('Erro na autenticação:', error);
-            });
-    });
-
-    document.getElementById('signupButton').addEventListener('click', () => {
-        const email = document.getElementById('signupEmail').value;
-        const password = document.getElementById('signupPassword').value;
-
-        createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                const user = userCredential.user;
-                console.log('Usuário cadastrado:', user);
-                window.location.href = 'sucesso.html';
-            })
-            .catch((error) => {
-                console.error('Erro no cadastro:', error.message);
-            });
-    });
-</script>
-
+        .show-password {
+            position: absolute;
+            right: 10px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <div class="container" id="loginForm">
         <h1>AndroidsApp</h1>
         <input type="email" id="loginEmail" placeholder="Email" required>
         <div class="input-password-wrapper">
-            <input type="password" id="loginPassword" class="password-input" placeholder="Senha" required>
-            <ion-icon name="eye-outline" class="show-password" onclick="togglePasswordVisibility()"></ion-icon>
+            <input type="password" id="loginPassword" placeholder="Senha" required>
+            <ion-icon name="eye-outline" class="show-password" onclick="togglePasswordVisibility('loginPassword')"></ion-icon>
         </div>
         <button onclick="login()">Login</button>
         <button class="google-button" id="googleLogin">Login com Google</button>
@@ -150,21 +104,20 @@
         <input type="text" id="signupName" placeholder="Nome" required>
         <input type="email" id="signupEmail" placeholder="Email" required>
         <div class="input-password-wrapper">
-            <input type="password" id="signupPassword" class="password-input" placeholder="Senha" required>
-            <ion-icon name="eye-outline" class="show-password" onclick="togglePasswordVisibilitySignup()"></ion-icon>
+            <input type="password" id="signupPassword" placeholder="Senha" required>
+            <ion-icon name="eye-outline" class="show-password" onclick="togglePasswordVisibility('signupPassword')"></ion-icon>
         </div>
         <button id="signupButton">Cadastrar</button>
         <p class="toggle-link">Já tem uma conta? <a onclick="toggleForm()">Login</a></p>
     </div>
 
-    <!-- Scripts do Firebase e validação de formulário -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
         import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendPasswordResetEmail, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyARUM95gOyKznC4LEACCoHxfSIQ8AjXwtU",
+            apiKey: "API_KEY",
             authDomain: "androids-apps.firebaseapp.com",
             projectId: "androids-apps",
             storageBucket: "androids-apps.appspot.com",
@@ -178,28 +131,23 @@
         const auth = getAuth();
         const provider = new GoogleAuthProvider();
 
-        // Verifica o estado de autenticação
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                console.log('Usuário autenticado:', user);
-            } else {
-                // Redireciona para a página de login se não estiver autenticado
-                window.location.href = 'login.html';
-            }
-        });
-
-        // Função de logout
-        function logout() {
-            signOut(auth).then(() => {
-                console.log('Usuário deslogado com sucesso');
-                localStorage.removeItem('isAuthenticated');
-                window.location.href = 'login.html';
-            }).catch((error) => {
-                console.error('Erro ao deslogar:', error);
-            });
+        function toggleForm() {
+            document.getElementById('loginForm').style.display = document.getElementById('loginForm').style.display === 'none' ? 'block' : 'none';
+            document.getElementById('signupForm').style.display = document.getElementById('signupForm').style.display === 'none' ? 'block' : 'none';
         }
 
-        // Função de login
+        function togglePasswordVisibility(inputId) {
+            const passwordInput = document.getElementById(inputId);
+            const passwordIcon = passwordInput.nextElementSibling;
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordIcon.name = 'eye-off-outline';
+            } else {
+                passwordInput.type = 'password';
+                passwordIcon.name = 'eye-outline';
+            }
+        }
+
         function login() {
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
@@ -209,8 +157,7 @@
             }
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    const user = userCredential.user;
-                    console.log('Usuário autenticado:', user);
+                    console.log('Usuário autenticado:', userCredential.user);
                     window.location.href = 'sucesso.html';
                 })
                 .catch((error) => {
@@ -218,7 +165,6 @@
                 });
         }
 
-        // Função de cadastro
         document.getElementById('signupButton').addEventListener('click', () => {
             const email = document.getElementById('signupEmail').value;
             const password = document.getElementById('signupPassword').value;
@@ -229,8 +175,7 @@
 
             createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    const user = userCredential.user;
-                    console.log('Usuário cadastrado:', user);
+                    console.log('Usuário cadastrado:', userCredential.user);
                     window.location.href = 'sucesso.html';
                 })
                 .catch((error) => {
@@ -238,12 +183,10 @@
                 });
         });
 
-        // Função de login com Google
         document.getElementById('googleLogin').addEventListener('click', () => {
             signInWithPopup(auth, provider)
                 .then((result) => {
-                    const user = result.user;
-                    console.log('Usuário autenticado:', user);
+                    console.log('Usuário autenticado:', result.user);
                     window.location.href = 'sucesso.html';
                 })
                 .catch((error) => {
@@ -251,7 +194,6 @@
                 });
         });
 
-        // Função de recuperação de senha
         function forgotPassword() {
             const email = prompt('Por favor, insira seu email:');
             if (email) {
@@ -264,47 +206,8 @@
                     });
             }
         }
-
-        // Função para alternar a visibilidade da senha
-        function togglePasswordVisibility() {
-            const passwordInput = document.getElementById('loginPassword');
-            const passwordIcon = document.querySelector('.show-password');
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                passwordIcon.name = 'eye-off-outline';
-            } else {
-                passwordInput.type = 'password';
-                passwordIcon.name = 'eye-outline';
-            }
-        }
-
-        // Função para alternar a visibilidade da senha no cadastro
-        function togglePasswordVisibilitySignup() {
-            const passwordInput = document.getElementById('signupPassword');
-            const passwordIcon = document.querySelector('.show-password');
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                passwordIcon.name = 'eye-off-outline';
-            } else {
-                passwordInput.type = 'password';
-                passwordIcon.name = 'eye-outline';
-            }
-        }
-
-        // Adiciona o evento de clique ao botão de logout e ao ícone do menu
-        document.addEventListener('DOMContentLoaded', () => {
-            const logoutButton = document.querySelector('.logout-button');
-            logoutButton.addEventListener('click', logout);
-
-            const menuIcon = document.querySelector('.menu-icon');
-            const menu = document.querySelector('.menu');
-            menuIcon.addEventListener('click', () => {
-                menu.style.display = menu.style.display === 'none' ? 'flex' : 'none';
-            });
-        });
     </script>
     <script src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js" type="module"></script>
     <script src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js" nomodule></script>
 </body>
-
 </html>
