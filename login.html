@@ -8,7 +8,7 @@
     <style>
         body {
             font-family: 'Lato', sans-serif;
-            background-color: #fafafa;
+            background-color: #f1f1f1;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -16,119 +16,102 @@
             margin: 0;
         }
         .container {
-            background-color: #fff;
-            border: 1px solid #dbdbdb;
-            padding: 40px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 30px;
             text-align: center;
             width: 100%;
-            max-width: 350px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 360px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: scale(0.95);
         }
-        .container h1 {
-            font-size: 2rem;
+        .container.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+        h1 {
+            font-size: 1.8rem;
+            color: #333;
             margin-bottom: 20px;
         }
-        .container a{
-            text-decoration: none;
-        }
-        .container input {
+        input {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin: 10px 0;
-            border: 1px solid #dbdbdb;
-            border-radius: 4px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
             font-size: 1rem;
         }
-        .container button {
+        button {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             background-color: #00d473;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             color: #fff;
             font-size: 1rem;
+            font-weight: bold;
             cursor: pointer;
             margin-top: 10px;
         }
-        .container button:hover {
+        button:hover {
             background-color: #00b963;
         }
         .toggle-link {
             margin-top: 20px;
             font-size: 0.9rem;
+            color: #555;
         }
         .toggle-link a {
-            color: #007bff;
+            color: #00d473;
             text-decoration: none;
             cursor: pointer;
         }
         .google-button {
-            background: #fff !important;
-            color: #333 !important;
+            background-color: #4285F4;
+            color: white;
             padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            border: none;
+            border-radius: 5px;
             font-size: 1rem;
             margin-top: 10px;
             cursor: pointer;
             width: 100%;
         }
         .google-button:hover {
-            background-color: #007bff;
-            color: #fff;
+            background-color: #357AE8;
         }
-        .input-mail-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
+        .message {
+            color: #d9534f;
+            font-size: 0.9rem;
+            margin: 8px 0;
+            display: none;
         }
-        .input-password-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-        .show-password {
-            position: absolute;
-            right: 10px;
-            cursor: pointer;
+        .success {
+            color: #5cb85c;
         }
     </style>
-</head>
-<body>
-    <div class="container" id="loginForm">
-        <h1>AndroidsApp</h1>
-        <input type="email" id="loginEmail" placeholder="Email" required>
-        <div class="input-password-wrapper">
-            <input type="password" id="loginPassword" placeholder="Senha" required>
-            <ion-icon name="eye-outline" class="show-password" onclick="togglePasswordVisibility('loginPassword')"></ion-icon>
-        </div>
-        <button onclick="login()">Login</button>
-        <button class="google-button" id="googleLogin">Login com Google</button>
-        <p><a href="#" onclick="forgotPassword()">Esqueceu a Senha?</a></p>
-        <p class="toggle-link">Não tem uma conta? <a onclick="toggleForm()">Cadastre-se</a></p>
-    </div>
+    <script>
+        function toggleForm() {
+            document.getElementById('loginForm').classList.toggle('active');
+            document.getElementById('signupForm').classList.toggle('active');
+            document.querySelectorAll('.message').forEach(el => el.style.display = 'none');
+        }
 
-    <div class="container" id="signupForm" style="display:none;">
-        <h1>Cadastre-se no AndroidsApp</h1>
-        <div class="input-mail-wrapper">
-        <input type="text" id="signupName" placeholder="Nome" required>
-        <input type="email" id="signupEmail" placeholder="Email" required>
-        </div>
-        <div class="input-password-wrapper">
-            <input type="password" id="signupPassword" placeholder="Senha" required>
-            <ion-icon name="eye-outline" class="show-password" onclick="togglePasswordVisibility('signupPassword')"></ion-icon>
-        </div>
-        <button id="signupButton">Cadastrar</button>
-        <p class="toggle-link">Já tem uma conta? <a onclick="toggleForm()">Login</a></p>
-    </div>
-
+        function showMessage(element, message, success = false) {
+            element.textContent = message;
+            element.className = success ? 'message success' : 'message';
+            element.style.display = 'block';
+        }
+    </script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
-        import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendPasswordResetEmail, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
         const firebaseConfig = {
-            apiKey: "API_KEY",
+            apiKey: "SUA_API_KEY_VALIDA",
             authDomain: "androids-apps.firebaseapp.com",
             projectId: "androids-apps",
             storageBucket: "androids-apps.appspot.com",
@@ -138,87 +121,72 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
         const auth = getAuth();
         const provider = new GoogleAuthProvider();
-
-        function toggleForm() {
-            document.getElementById('loginForm').style.display = document.getElementById('loginForm').style.display === 'none' ? 'block' : 'none';
-            document.getElementById('signupForm').style.display = document.getElementById('signupForm').style.display === 'none' ? 'block' : 'none';
-        }
-
-        function togglePasswordVisibility(inputId) {
-            const passwordInput = document.getElementById(inputId);
-            const passwordIcon = passwordInput.nextElementSibling;
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                passwordIcon.name = 'eye-off-outline';
-            } else {
-                passwordInput.type = 'password';
-                passwordIcon.name = 'eye-outline';
-            }
-        }
-
-        function login() {
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            if (!email.includes('@')) {
-                alert('Por favor, insira um email válido.');
-                return;
-            }
-            signInWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    console.log('Usuário autenticado:', userCredential.user);
-                    window.location.href = 'sucesso.html';
-                })
-                .catch((error) => {
-                    alert('Erro no login: ' + error.message);
-                });
-        }
-
-        document.getElementById('signupButton').addEventListener('click', () => {
-            const email = document.getElementById('signupEmail').value;
-            const password = document.getElementById('signupPassword').value;
-            if (!email.includes('@')) {
-                alert('Por favor, insira um email válido.');
-                return;
-            }
-
-            createUserWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    console.log('Usuário cadastrado:', userCredential.user);
-                    window.location.href = 'sucesso.html';
-                })
-                .catch((error) => {
-                    alert('Erro no cadastro: ' + error.message);
-                });
-        });
 
         document.getElementById('googleLogin').addEventListener('click', () => {
             signInWithPopup(auth, provider)
                 .then((result) => {
-                    console.log('Usuário autenticado:', result.user);
-                    window.location.href = 'sucesso.html';
+                    showMessage(document.getElementById('loginMessage'), 'Login com Google bem-sucedido!', true);
+                    setTimeout(() => window.location.href = 'sucesso.html', 1500);
                 })
                 .catch((error) => {
-                    alert('Erro na autenticação: ' + error.message);
+                    showMessage(document.getElementById('loginMessage'), 'Erro na autenticação com Google.');
                 });
         });
 
-        function forgotPassword() {
-            const email = prompt('Por favor, insira seu email:');
-            if (email) {
-                sendPasswordResetEmail(auth, email)
-                    .then(() => {
-                        alert('Email de redefinição de senha enviado!');
-                    })
-                    .catch((error) => {
-                        alert('Erro ao enviar email de redefinição de senha: ' + error.message);
-                    });
+        document.getElementById('loginButton').addEventListener('click', () => {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            if (!email || !password) {
+                showMessage(document.getElementById('loginMessage'), 'Preencha todos os campos.');
+                return;
             }
-        }
+            signInWithEmailAndPassword(auth, email, password)
+                .then(() => {
+                    showMessage(document.getElementById('loginMessage'), 'Login realizado com sucesso!', true);
+                    setTimeout(() => window.location.href = 'sucesso.html', 1500);
+                })
+                .catch(() => {
+                    showMessage(document.getElementById('loginMessage'), 'Erro no login. Verifique suas credenciais.');
+                });
+        });
+
+        document.getElementById('signupButton').addEventListener('click', () => {
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            if (!email || !password) {
+                showMessage(document.getElementById('signupMessage'), 'Preencha todos os campos.');
+                return;
+            }
+            createUserWithEmailAndPassword(auth, email, password)
+                .then(() => {
+                    showMessage(document.getElementById('signupMessage'), 'Cadastro realizado com sucesso!', true);
+                    setTimeout(() => window.location.href = 'sucesso.html', 1500);
+                })
+                .catch(() => {
+                    showMessage(document.getElementById('signupMessage'), 'Erro no cadastro. Tente novamente.');
+                });
+        });
     </script>
-    <script src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js" type="module"></script>
-    <script src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js" nomodule></script>
+</head>
+<body onload="document.getElementById('loginForm').classList.add('active')">
+    <div class="container" id="loginForm">
+        <h1>AndroidsApp</h1>
+        <input type="email" id="loginEmail" placeholder="Email">
+        <input type="password" id="loginPassword" placeholder="Senha">
+        <button id="loginButton">Login</button>
+        <button class="google-button" id="googleLogin">Login com Google</button>
+        <p id="loginMessage" class="message"></p>
+        <p class="toggle-link">Não tem uma conta? <a onclick="toggleForm()">Cadastre-se</a></p>
+    </div>
+    <div class="container" id="signupForm" style="display:none;">
+        <h1>Cadastre-se no AndroidsApp</h1>
+        <input type="email" id="signupEmail" placeholder="Email">
+        <input type="password" id="signupPassword" placeholder="Senha">
+        <button id="signupButton">Cadastrar</button>
+        <p id="signupMessage" class="message"></p>
+        <p class="toggle-link">Já tem uma conta? <a onclick="toggleForm()">Login</a></p>
+    </div>
 </body>
 </html>
