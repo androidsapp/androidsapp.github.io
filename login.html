@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - AndroidsApp</title>
-    <link rel="stylesheet" href="login.css" />
+    <link rel="stylesheet" href="login.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js"></script>
 </head>
 <body>
     <div class="container">
@@ -19,10 +22,7 @@
     </div>
 
     <script>
-        // Firebase Configuration
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-
+        // Configuração Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyARUM95gOyKznC4LEACCoHxfSIQ8AjXwtU",
             authDomain: "androids-apps.firebaseapp.com",
@@ -33,17 +33,18 @@
             measurementId: "G-83FX2K52JX"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth();
-        const provider = new GoogleAuthProvider();
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const provider = new firebase.auth.GoogleAuthProvider();
 
         // Autenticação com Email e Senha
         document.getElementById('loginButton').addEventListener('click', () => {
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
             const loginMessage = document.getElementById('loginMessage');
+            loginMessage.innerText = '';  // Limpar mensagem anterior
 
-            signInWithEmailAndPassword(auth, email, password)
+            auth.signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
                     loginMessage.classList.add('success');
                     loginMessage.innerText = 'Login realizado com sucesso!';
@@ -57,8 +58,9 @@
         // Login com Google
         document.getElementById('googleLogin').addEventListener('click', () => {
             const loginMessage = document.getElementById('loginMessage');
+            loginMessage.innerText = '';  // Limpar mensagem anterior
 
-            signInWithPopup(auth, provider)
+            auth.signInWithPopup(provider)
                 .then((result) => {
                     loginMessage.classList.add('success');
                     loginMessage.innerText = 'Login com Google realizado com sucesso!';
@@ -73,12 +75,14 @@
         document.getElementById('forgotPasswordLink').addEventListener('click', () => {
             const email = document.getElementById('loginEmail').value;
             const loginMessage = document.getElementById('loginMessage');
+            loginMessage.innerText = '';  // Limpar mensagem anterior
+
             if (!email) {
                 loginMessage.innerText = 'Por favor, insira seu email para redefinir a senha.';
                 return;
             }
 
-            sendPasswordResetEmail(auth, email)
+            auth.sendPasswordResetEmail(email)
                 .then(() => {
                     loginMessage.classList.add('success');
                     loginMessage.innerText = 'Email de redefinição de senha enviado!';
