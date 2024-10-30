@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - AndroidsApp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="login.css" />    
+</head>
+<body>
+    <div class="container">
+        <h1>Cadastro - AndroidsApp</h1>
+        <input type="email" id="signupEmail" placeholder="Email">
+        <input type="password" id="signupPassword" placeholder="Senha">
+        <button id="signupButton">Cadastrar</button>
+        <p class="message" id="signupMessage"></p>
+    </div>
+
+    <script>
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+        const auth = getAuth();
+
+        document.getElementById('signupButton').addEventListener('click', () => {
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const signupMessage = document.getElementById('signupMessage');
+
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    signupMessage.classList.add('success');
+                    signupMessage.innerText = 'Cadastro realizado com sucesso!';
+                    setTimeout(() => window.close(), 2000);
+                })
+                .catch((error) => {
+                    signupMessage.innerText = 'Erro no cadastro: ' + error.message;
+                });
+        });
+    </script>
+</body>
+</html>
