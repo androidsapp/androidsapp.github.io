@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login e Cadastro AndroidsApp</title>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <title>Login - AndroidsApp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Lato', sans-serif;
-            background-color: #f0f0f0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f4;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -17,113 +17,85 @@
         }
         .container {
             background-color: #fff;
-            border: 1px solid #dbdbdb;
-            padding: 30px;
+            padding: 2rem;
             text-align: center;
-            width: 100%;
-            max-width: 350px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             border-radius: 8px;
+            box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 360px;
         }
         .container h1 {
             font-size: 1.8rem;
-            margin-bottom: 10px;
+            margin-bottom: 1rem;
             color: #333;
         }
         .container input {
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #dbdbdb;
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 1rem;
-            outline: none;
         }
         .container button {
             width: 100%;
-            padding: 10px;
-            background-color: #00d473;
+            padding: 0.8rem;
+            background-color: #00b894;
             border: none;
             border-radius: 4px;
             color: #fff;
             font-size: 1rem;
             cursor: pointer;
-            margin-top: 10px;
             transition: background-color 0.3s ease;
         }
         .container button:hover {
-            background-color: #00b963;
-        }
-        .toggle-link {
-            margin-top: 15px;
-            font-size: 0.9rem;
-        }
-        .toggle-link a {
-            color: #00d473;
-            text-decoration: none;
-            cursor: pointer;
+            background-color: #019f7c;
         }
         .google-button {
             background-color: #4285F4;
             color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            font-size: 1rem;
-            margin-top: 10px;
-            cursor: pointer;
-            width: 100%;
+            margin-top: 1rem;
         }
         .google-button:hover {
-            background-color: #357AE8;
+            background-color: #357ae8;
+        }
+        .link {
+            display: block;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+        .link a {
+            color: #00b894;
+            text-decoration: none;
+            cursor: pointer;
         }
         .message {
             font-size: 0.9rem;
             color: red;
-            margin-top: 5px;
+            margin-top: 0.5rem;
         }
-        .success-message {
-            color: #00d473;
+        .success {
+            color: #00b894;
         }
     </style>
 </head>
 <body>
-    <div class="container" id="loginForm">
-        <h1>AndroidsApp</h1>
-        <input type="text" id="loginUser" placeholder="Usuário">
+    <div class="container">
+        <h1>Login - AndroidsApp</h1>
+        <input type="text" id="loginEmail" placeholder="Email">
         <input type="password" id="loginPassword" placeholder="Senha">
-        <button id="loginButton">Login</button>
-        <button class="google-button" id="googleLogin">Login com Google</button>
-        <p class="toggle-link">Não tem uma conta? <a onclick="toggleForm()">Cadastre-se</a></p>
+        <button id="loginButton">Entrar</button>
+        <button class="google-button" id="googleLogin">Entrar com Google</button>
+        <p class="link"><a id="forgotPasswordLink">Esqueci a senha</a></p>
+        <p class="link">Não tem uma conta? <a id="registerLink">Cadastre-se</a></p>
         <p class="message" id="loginMessage"></p>
-    </div>
-    <div class="container" id="signupForm" style="display:none;">
-        <h1>Cadastre-se no AndroidsApp</h1>
-        <input type="email" id="signupEmail" placeholder="Email">
-        <input type="password" id="signupPassword" placeholder="Senha">
-        <button id="signupButton">Cadastrar</button>
-        <p class="toggle-link">Já tem uma conta? <a onclick="toggleForm()">Login</a></p>
-        <p class="message" id="signupMessage"></p>
     </div>
 
     <script>
-        function toggleForm() {
-            var loginForm = document.getElementById('loginForm');
-            var signupForm = document.getElementById('signupForm');
-            loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
-            signupForm.style.display = signupForm.style.display === 'none' ? 'block' : 'none';
-            clearMessages();
-        }
-
-        function clearMessages() {
-            document.getElementById('loginMessage').innerText = '';
-            document.getElementById('signupMessage').innerText = '';
-        }
-
         // Firebase Configuration
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-        
+        import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
         const firebaseConfig = {
             apiKey: "AIzaSyARUM95gOyKznC4LEACCoHxfSIQ8AjXwtU",
             authDomain: "androids-apps.firebaseapp.com",
@@ -133,42 +105,65 @@
             appId: "1:964826260210:web:7491c0a921f146df91a66b",
             measurementId: "G-83FX2K52JX"
         };
-        
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth();
         const provider = new GoogleAuthProvider();
 
-        document.getElementById('googleLogin').addEventListener('click', () => {
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    const user = result.user;
-                    console.log('Usuário autenticado:', user);
+        // Autenticação com Email e Senha
+        document.getElementById('loginButton').addEventListener('click', () => {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const loginMessage = document.getElementById('loginMessage');
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    loginMessage.classList.add('success');
+                    loginMessage.innerText = 'Login realizado com sucesso!';
                     window.location.href = 'sucesso.html';
                 })
                 .catch((error) => {
-                    document.getElementById('loginMessage').innerText = 'Erro ao fazer login com o Google';
-                    console.error('Erro na autenticação:', error);
+                    loginMessage.innerText = 'Erro no login: ' + error.message;
                 });
         });
 
-        document.getElementById('signupButton').addEventListener('click', () => {
-            const email = document.getElementById('signupEmail').value;
-            const password = document.getElementById('signupPassword').value;
-            if (!email || !password) {
-                document.getElementById('signupMessage').innerText = 'Preencha todos os campos!';
-                return;
-            }
+        // Login com Google
+        document.getElementById('googleLogin').addEventListener('click', () => {
+            const loginMessage = document.getElementById('loginMessage');
 
-            createUserWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    document.getElementById('signupMessage').innerText = 'Cadastro realizado com sucesso!';
-                    document.getElementById('signupMessage').classList.add('success-message');
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    loginMessage.classList.add('success');
+                    loginMessage.innerText = 'Login com Google realizado com sucesso!';
                     window.location.href = 'sucesso.html';
                 })
                 .catch((error) => {
-                    document.getElementById('signupMessage').innerText = 'Erro ao cadastrar: ' + error.message;
-                    console.error('Erro no cadastro:', error.message);
+                    loginMessage.innerText = 'Erro ao fazer login com Google: ' + error.message;
                 });
+        });
+
+        // Esqueci a Senha
+        document.getElementById('forgotPasswordLink').addEventListener('click', () => {
+            const email = document.getElementById('loginEmail').value;
+            const loginMessage = document.getElementById('loginMessage');
+            if (!email) {
+                loginMessage.innerText = 'Por favor, insira seu email para redefinir a senha.';
+                return;
+            }
+
+            sendPasswordResetEmail(auth, email)
+                .then(() => {
+                    loginMessage.classList.add('success');
+                    loginMessage.innerText = 'Email de redefinição de senha enviado!';
+                })
+                .catch((error) => {
+                    loginMessage.innerText = 'Erro ao enviar email de redefinição: ' + error.message;
+                });
+        });
+
+        // Link para Cadastro
+        document.getElementById('registerLink').addEventListener('click', () => {
+            window.open('cadastro.html', '_blank', 'width=400,height=600');
         });
     </script>
 </body>
