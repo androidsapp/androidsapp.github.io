@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login e Cadastro AndroidsApp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="login.css">
+    <script>
+        function toggleForm() {
+            var loginForm = document.getElementById('loginForm');
+            var signupForm = document.getElementById('signupForm');
+            loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
+            signupForm.style.display = signupForm.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    
+    const firebaseConfig = {
+        apiKey: "AIzaSyARUM95gOyKznC4LEACCoHxfSIQ8AjXwtU",
+        authDomain: "androids-apps.firebaseapp.com",
+        projectId: "androids-apps",
+        storageBucket: "androids-apps.appspot.com",
+        messagingSenderId: "964826260210",
+        appId: "1:964826260210:web:7491c0a921f146df91a66b",
+        measurementId: "G-83FX2K52JX"
+    };
+    
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+    
+    document.getElementById('googleLogin').addEventListener('click', () => {
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                const user = result.user;
+                console.log('Usuário autenticado:', user);
+                window.location.href = 'sucesso.html';
+            })
+            .catch((error) => {
+                console.error('Erro na autenticação:', error);
+            });
+    });
+
+    document.getElementById('signupButton').addEventListener('click', () => {
+        const email = document.getElementById('signupEmail').value;
+        const password = document.getElementById('signupPassword').value;
+
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                console.log('Usuário cadastrado:', user);
+                window.location.href = 'sucesso.html';
+            })
+            .catch((error) => {
+                console.error('Erro no cadastro:', error.message);
+            });
+    });
+</script>
+
+</head>
+<body>
+    <div class="container" id="loginForm">
+        <h1>AndroidsApp</h1>
+        <input type="text" placeholder="Usuário">
+        <input type="password" placeholder="Senha">
+        <button>Login</button>
+        <button class="google-button" id="googleLogin">Login com Google</button>
+        <p class="toggle-link">Não tem uma conta? <a onclick="toggleForm()">Cadastre-se</a></p>
+    </div>
+    <div class="container" id="signupForm" style="display:none;">
+    <h1>Cadastre-se no AndroidsApp</h1>
+    <input type="email" id="signupEmail" placeholder="Email">
+    <input type="password" id="signupPassword" placeholder="Senha">
+    <button id="signupButton">Cadastrar</button>
+    <p class="toggle-link">Já tem uma conta? <a onclick="toggleForm()">Login</a></p>
+</div>
+</body>
+</html>

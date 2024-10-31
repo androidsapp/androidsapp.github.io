@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AndroidsApp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script>
+        function toggleMenu() {
+            var menu = document.getElementById('menu');
+            menu.style.display = menu.style.display === 'none' ? 'flex' : 'none';
+        }
+    </script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyARUM95gOyKznC4LEACCoHxfSIQ8AjXwtU",
+            authDomain: "androids-apps.firebaseapp.com",
+            projectId: "androids-apps",
+            storageBucket: "androids-apps.appspot.com",
+            messagingSenderId: "964826260210",
+            appId: "1:964826260210:web:7491c0a921f146df91a66b",
+            measurementId: "G-83FX2K52JX"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth();
+
+        // Verifica o estado de autenticação
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log('Usuário autenticado:', user);
+            } else {
+                // Redireciona para a página de login se não estiver autenticado
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="menu-icon" onclick="toggleMenu()">☰</div>
+        <div class="logo">AndroidsApp</div>
+    </nav>
+    <div id="menu" class="menu">
+        <a href="#">Contato</a>
+        <a href="#">Serviços</a>
+        <a href="#">Produtos</a>
+    </div>
+</body>
+</html>
