@@ -15,12 +15,12 @@ body {
         }
         .container {
             background-color: #fff;
-            border: 1px solid #dbdbdb;
+            /*border: 1px solid #dbdbdb;*/
             padding: 40px;
             text-align: center;
             width: 100%;
             max-width: 350px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            /*box-shadow: 0 4px 8px rgba(0,0,0,0.1);*/
         }
         .container h1 {
             font-size: 2rem;
@@ -58,17 +58,17 @@ body {
             cursor: pointer;
         }
         .google-button {
-            background-color: #4285F4;
-            color: white;
+            /*background-color: #4285F4;*/
+            color: #333;
             padding: 10px;
             border: none;
-            border-radius: 4px;
+            /*border-radius: 4px;*/
             font-size: 1rem;
             margin-top: 10px;
             cursor: pointer;
             width: 100%;
         }
         .google-button:hover {
-            background-color: #357AE8;
+            background-color: #eee;
         }
     
